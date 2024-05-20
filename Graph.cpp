@@ -122,7 +122,7 @@ namespace ariel{
             return res;
         }
 
-        Graph& Graph::operator+=(const Graph& g2){
+        Graph& Graph::operator-=(const Graph& g2){
 
             size_t graph_size = this->adj_matrix.size();
             if(graph_size != g2.adj_matrix.size()){  // sizes validation
@@ -149,6 +149,102 @@ namespace ariel{
                 }
             }
             return result; // Return the negated Graph object
+        }
+
+        bool operator<(const Graph& g1, const Graph& g2) {
+
+            // check if this graph is contained in g2:
+            size_t size_this = g1.adj_matrix.size();
+            size_t size_g2 = g2.adj_matrix.size();
+            bool check_contained = false;
+            // if this.size > g2.size so obviously this is not contained in g2. else:
+            if(size_this <= size_g2){
+                check_contained = true;
+                for (size_t i = 0; i < size_this; ++i) {
+                    for (size_t j = 0; j < size_this; ++j) {
+                        if (g1.adj_matrix[i][j] != 0 && g1.adj_matrix[i][j] != g2.adj_matrix[i][j]) {  // contained condition
+                            check_contained = false;  // means there is an edge in this that doesnt exist in g2
+                        }
+                    }
+                }
+                if(size_this == size_g2 && check_contained == true){  // if the sizes are equal and all components in this exists in g2,
+                    check_contained = false;                          // so we need to check for strict contained.
+                    for (size_t i = 0; i < size_this; ++i) {          
+                        for (size_t j = 0; j < size_this; ++j) {
+                            if(g2.adj_matrix[i][j] != 0 && g1.adj_matrix[i][j] == 0){
+                                check_contained = true;  // means we found component that exist in g2 but not in this.
+                            }
+                        }
+                    }
+                }
+            }
+            if(check_contained == true) return true;  // first condition accepted.
+
+            // check number of edges:
+            size_t edges_g2 = 0;
+            size_t edges_this = 0;
+            if(size_this == size_g2){  // equal sizes:
+                for (size_t i = 0; i < size_g2; ++i) {
+                    for (size_t j = 0; j < size_g2; ++j) {
+                        if(g1.adj_matrix[i][j] != 0) edges_this++;  //counting this edges
+                        if(g2.adj_matrix[i][j] != 0) edges_g2++;  // counting g2 edges
+                    }
+                }
+                if(edges_this < edges_g2) return true;
+            }
+            else{  // not equal sizes:
+                for (size_t i = 0; i < size_this; ++i) {
+                    for (size_t j = 0; j < size_this; ++j) {
+                        if(g1.adj_matrix[i][j] != 0) edges_this++;  //counting this edges
+                    }
+                }
+                for (size_t i = 0; i < size_g2; ++i) {
+                    for (size_t j = 0; j < size_g2; ++j) {
+                        if(g2.adj_matrix[i][j] != 0) edges_g2++;  // counting g2 edges
+                    }
+                }
+                if(edges_this < edges_g2) return true;
+            }
+
+            return size_this < size_g2;
+        }
+
+        bool operator>(const Graph& g1, const Graph& g2) {
+            // Check if g2 is strictly contained in this graph or if g2 is not larger than this graph
+            return g2 < g1;
+        }
+
+        bool operator==(const Graph& g1, const Graph& g2) {
+            bool equals = true;
+            // Check if the graphs are of the same size and contain the same edges
+            if (g1.adj_matrix.size() != g2.adj_matrix.size()) {
+                equals = false;
+            }
+            else{
+                for (size_t i = 0; i < g1.adj_matrix.size(); ++i) {
+                    for (size_t j = 0; j < g1.adj_matrix[i].size(); ++j) {
+                        if (g1.adj_matrix[i][j] != g2.adj_matrix[i][j]) {
+                            equals = false;
+                        }
+                    }
+                }
+            }
+            // cheack if one is bigger than the other:
+            if(g1 < g2 || g1 > g2) equals = false;
+
+            return equals;
+        }
+
+        bool operator!=(const Graph& g1, const Graph& g2) {
+            return !(g1 == g2);
+        }
+
+        bool operator<=(const Graph& g1, const Graph& g2) {
+            return g1 < g2 || g1 == g2;
+        }
+
+        bool operator>=(const Graph& g1, const Graph& g2) {
+            return g1 > g2 || g1 == g2;
         }
 
 };

@@ -43,6 +43,20 @@ namespace ariel{
             Graph operator-(const Graph& g1) const;
             Graph& operator-=(const Graph& g1);
             Graph operator-() const;
+            /**
+             * comparison operators:
+             * Graph G2 is larger than graph G1 if graph G1 is strictly contained in graph G2.
+             *  If no graph is strictly contained in the other and the graphs are not equal,
+             *  then graph G2 is larger than graph G1 if the number of edges in G2 is greater than the number of edges in G1.
+             *  If, nevertheless, the number of edges is the same,
+             *  then graph G2 is larger than graph G1 if the representing matrix of G2 has a higher order than that of G1.
+            */
+            friend bool operator<(const Graph& g1, const Graph& g2);
+            friend bool operator>(const Graph& g1, const Graph& g2);
+            friend bool operator==(const Graph& g1, const Graph& g2);
+            friend bool operator!=(const Graph& g1, const Graph& g2);
+            friend bool operator<=(const Graph& g1, const Graph& g2);
+            friend bool operator>=(const Graph& g1, const Graph& g2);
     };
 }
 

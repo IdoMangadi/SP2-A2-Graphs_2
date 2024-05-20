@@ -1,6 +1,7 @@
 #include "doctest.h"
 #include "Algorithms.hpp"
 #include "Graph.hpp"
+#include <sstream>
 
 using namespace std;
 
@@ -12,18 +13,35 @@ TEST_CASE("Test graph addition")
         {1, 0, 1},
         {0, 1, 0}};
     g1.loadGraph(graph);
+
     ariel::Graph g2;
     vector<vector<int>> weightedGraph = {
         {0, 1, 1},
         {1, 0, 2},
         {1, 2, 0}};
     g2.loadGraph(weightedGraph);
+
     ariel::Graph g3 = g1 + g2;
+
+    ariel::Graph g4;
     vector<vector<int>> expectedGraph = {
         {0, 2, 1},
         {2, 0, 3},
         {1, 3, 0}};
-    CHECK(g3.printGraph() == "[0, 2, 1]\n[2, 0, 3]\n[1, 3, 0]");
+    g4.loadGraph(expectedGraph);
+    
+    std::ostringstream oss;
+    oss << g3;
+    string g3_str = oss.str();
+
+    // Clear the ostringstream
+    oss.str("");  // Clear the contents
+    oss.clear();  // Clear the state flags
+
+    oss << g4;
+    string g4_str = oss.str();
+
+    CHECK(g3_str == g4_str);
 }
 
 TEST_CASE("Test graph multiplication")
