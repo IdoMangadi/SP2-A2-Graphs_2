@@ -57,6 +57,21 @@ namespace ariel{
             friend bool operator!=(const Graph& g1, const Graph& g2);
             friend bool operator<=(const Graph& g1, const Graph& g2);
             friend bool operator>=(const Graph& g1, const Graph& g2);
+
+            /**
+             * incrementing ad decrement multiplication and division:
+            */
+            Graph& operator++();
+            Graph operator++(int);
+            Graph& operator--();
+            Graph operator--(int);
+            Graph& operator*=(int val);
+            Graph& operator/=(int val);
+
+            /**
+             * multiplication of two graphs:
+            */
+            Graph operator*(const Graph& g2) const;
     };
 }
 

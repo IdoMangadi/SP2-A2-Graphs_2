@@ -104,7 +104,7 @@ namespace ariel{
 
             size_t graph_size = this->adj_matrix.size();
             if(graph_size != g1.adj_matrix.size()){  // sizes validation
-                throw std::invalid_argument("Cannot add graphs of different sizes.");
+                throw std::invalid_argument("Cannot substruct graphs of different sizes.");
             }
 
             Graph res;
@@ -126,7 +126,7 @@ namespace ariel{
 
             size_t graph_size = this->adj_matrix.size();
             if(graph_size != g2.adj_matrix.size()){  // sizes validation
-                throw std::invalid_argument("Cannot add graphs of different sizes.");
+                throw std::invalid_argument("Cannot substruct graphs of different sizes.");
             }
             for(size_t i=0; i<graph_size; i++){
                 for(size_t j=0; j<graph_size; j++){
@@ -245,6 +245,96 @@ namespace ariel{
 
         bool operator>=(const Graph& g1, const Graph& g2) {
             return g1 > g2 || g1 == g2;
+        }
+
+        /**
+         * incrementing ad decrement multiplication and division:
+        */
+       // Prefix increment
+        Graph& Graph::operator++(){
+            for (size_t i = 0; i < this->adj_matrix.size(); ++i) {
+                for (size_t j = 0; j < this->adj_matrix.size(); ++j) {
+                    if (this->adj_matrix[i][j] != 0) {
+                        this->adj_matrix[i][j]++;
+                    }
+                }
+            }
+            return *this;
+        }
+        // Postfix increment
+        Graph Graph::operator++(int) {
+            Graph temp = *this; // Store the current state
+            ++(*this);          // Use prefix increment to increment the current object
+            return temp;        // Return the stored state (the original value before increment)
+        }
+        // Prefix decrement
+        Graph& Graph::operator--(){
+            for (size_t i = 0; i < this->adj_matrix.size(); ++i) {
+                for (size_t j = 0; j < this->adj_matrix.size(); ++j) {
+                    if (this->adj_matrix[i][j] != 0) {
+                        this->adj_matrix[i][j]--;
+                    }
+                }
+            }
+            return *this;
+        }
+        // Postfix decrement
+        Graph Graph::operator--(int) {
+            Graph temp = *this; // Store the current state
+            --(*this);          // Use prefix increment to increment the current object
+            return temp;        // Return the stored state (the original value before increment)
+        }
+        Graph& Graph::operator*=(int val){
+            for (size_t i = 0; i < this->adj_matrix.size(); ++i) {
+                for (size_t j = 0; j < this->adj_matrix.size(); ++j) {
+                        this->adj_matrix[i][j] *= val;
+                }
+            }
+            return *this;
+        }
+        Graph& Graph::operator/=(int val){
+            if(val == 0){
+                throw std::runtime_error("Division by zero error");
+            }
+            for (size_t i = 0; i < this->adj_matrix.size(); ++i) {
+                for (size_t j = 0; j < this->adj_matrix.size(); ++j) {
+                        this->adj_matrix[i][j] /= val;
+                }
+            }
+            return *this;
+        }
+
+        /**
+         * multiplication of two graphs:
+        */
+        Graph Graph::operator*(const Graph& g2) const {
+
+            // Ensure the graphs are of the same size and are square matrices
+            size_t size_this = this->adj_matrix.size();
+            size_t size_g2 = g2.adj_matrix.size();
+            
+            if (size_this != size_g2) {
+                throw std::invalid_argument("Cannot multiply graphs of different sizes.");
+            }
+            
+            // create and initiate the result graph:
+            Graph result;   
+            result.adj_matrix.resize(size_this, std::vector<int>(size_this, 0));
+
+            // Matrix multiplication
+            for (size_t i = 0; i < size_this; ++i) {
+                for (size_t j = 0; j < size_this; ++j) {
+                    if (i != j) { // Skip main diagonal
+                        for (size_t k = 0; k < size_this; ++k) {
+                            if (i != k && k != j) { // Skip elements that would contribute to the main diagonal
+                                result.adj_matrix[i][j] += this->adj_matrix[i][k] * g2.adj_matrix[k][j];
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
 };
