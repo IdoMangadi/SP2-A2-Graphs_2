@@ -61,10 +61,10 @@ namespace ariel{
             /**
              * incrementing ad decrement multiplication and division:
             */
-            Graph& operator++();
-            Graph operator++(int);
-            Graph& operator--();
-            Graph operator--(int);
+            Graph& operator++();  // incrementing every existing edge by one.
+            Graph operator++(int);  // incrementing every existing edge by one
+            Graph& operator--();  // decrementing every existing edge by one
+            Graph operator--(int);  // decrementing every existing edge by one
             Graph& operator*=(int val);
             Graph& operator/=(int val);
 
