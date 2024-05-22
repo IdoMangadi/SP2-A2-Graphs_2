@@ -215,7 +215,7 @@ namespace ariel{
         }
 
         bool operator==(const Graph& g1, const Graph& g2) {
-            bool equals = true;
+            bool equals = true, not_bigger = true;
             // Check if the graphs are of the same size and contain the same edges
             if (g1.adj_matrix.size() != g2.adj_matrix.size()) {
                 equals = false;
@@ -229,10 +229,10 @@ namespace ariel{
                     }
                 }
             }
-            // cheack if one is bigger than the other:
-            if(g1 < g2 || g1 > g2) equals = false;
+            // check if one is bigger than the other:
+            if(g1 < g2 || g1 > g2) not_bigger = false;
 
-            return equals;
+            return equals || not_bigger;
         }
 
         bool operator!=(const Graph& g1, const Graph& g2) {
@@ -324,15 +324,12 @@ namespace ariel{
             // Matrix multiplication
             for (size_t i = 0; i < size_this; ++i) {
                 for (size_t j = 0; j < size_this; ++j) {
-                    if (i != j) { // Skip main diagonal
                         for (size_t k = 0; k < size_this; ++k) {
-                            if (i != k && k != j) { // Skip elements that would contribute to the main diagonal
-                                result.adj_matrix[i][j] += this->adj_matrix[i][k] * g2.adj_matrix[k][j];
-                            }
+                            result.adj_matrix[i][j] += this->adj_matrix[i][k] * g2.adj_matrix[k][j];
                         }
-                    }
                 }
             }
+
 
             return result;
         }

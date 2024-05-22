@@ -29,7 +29,7 @@ namespace ariel{
 
             visited[v] = 1;  // marking the vertix as visited
             for(size_t i=0; i<g.size(); i++){ // going over the neighbours and if not visited, operating dfs on them
-                if(g.adj_matrix[v][i] != 0 && visited[i] == 0) {
+                if(g.getGraph()[v][i] != 0 && visited[i] == 0) {
                     dfs(g, i, visited);
                 }
             }
@@ -41,7 +41,7 @@ namespace ariel{
         bool isDirected(Graph &g){
             for(size_t i=0; i<g.size(); i++){  // going over all the verteces
                 for(size_t j=0; j<g.size(); j++){
-                    if(g.adj_matrix[i][j] != g.adj_matrix[j][i]){ 
+                    if(g.getGraph()[i][j] != g.getGraph()[j][i]){ 
                         return true;
                     }
                 }
@@ -89,7 +89,7 @@ namespace ariel{
         // ------------------------------------------------ //
 
         std::string shortestPath(Graph &g, size_t src, size_t dst){
-            size_t n = g.adj_matrix.size();
+            size_t n = g.getGraph().size();
             if( n == 0 || src > n-1 || dst > n-1) return "-1";  // validation check
 
             std::vector<int> dist(n, std::numeric_limits<int>::max()); // Initialize distances to infinity
@@ -102,8 +102,8 @@ namespace ariel{
             for (size_t i = 0; i < n-1; i++) { // notice (n-1)
                 for (size_t j = 0; j < n; j++) {  // going over the edges:
                     for (size_t v = 0; v < n; v++) {
-                        if (g.adj_matrix[j][v] != 0 && dist[j] != std::numeric_limits<int>::max() && dist[j] + g.adj_matrix[j][v] < dist[v]) {
-                            dist[v] = dist[j] + g.adj_matrix[j][v];
+                        if (g.getGraph()[j][v] != 0 && dist[j] != std::numeric_limits<int>::max() && dist[j] + g.getGraph()[j][v] < dist[v]) {
+                            dist[v] = dist[j] + g.getGraph()[j][v];
                             parent[v] = j;
                         }
                     }
@@ -113,7 +113,7 @@ namespace ariel{
             // Check for negative cycles (one last relaxing)
             for (size_t u = 0; u < n; ++u) {
                 for (size_t v = 0; v < n; ++v) {
-                    if (g.adj_matrix[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + g.adj_matrix[u][v] < dist[v]) {
+                    if (g.getGraph()[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + g.getGraph()[u][v] < dist[v]) {
                         // Negative cycle found
                         // std::cout << "Graph contains negative cycle" << std::endl;
                         return "-1";
@@ -154,8 +154,8 @@ namespace ariel{
         bool hasCycleUtil_directed(Graph &g, size_t u, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &cycleVertices) {
             color[u] = GREY; // Mark the current vertex as visited but not finished
 
-            for (size_t v = 0; v < g.adj_matrix[u].size(); ++v) {  // going over the neighbours:
-                if (g.adj_matrix[u][v] != 0) {
+            for (size_t v = 0; v < g.getGraph()[u].size(); ++v) {  // going over the neighbours:
+                if (g.getGraph()[u][v] != 0) {
                     if (color[v] == WHITE) {  // means neighbour hasnt visited yet
                         parent[v] = u;
                         if (hasCycleUtil_directed(g, v, color, parent, cycleVertices)) {  // recursive call (implementing dfs principle)
@@ -182,8 +182,8 @@ namespace ariel{
         bool hasCycleUtil_undirected(Graph &g, size_t u, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &cycleVertices) {
             color[u] = GREY; // Mark the current vertex as visited but not finished
 
-            for (size_t v = 0; v < g.adj_matrix[u].size(); ++v) {  // going over the neighbours:
-                if (g.adj_matrix[u][v] != 0) {
+            for (size_t v = 0; v < g.getGraph()[u].size(); ++v) {  // going over the neighbours:
+                if (g.getGraph()[u][v] != 0) {
                     if (color[v] == WHITE) {  // means neighbour hasnt visited yet
                         parent[v] = u;
                         if (hasCycleUtil_undirected(g, v, color, parent, cycleVertices)) {  // recursive call (implementing dfs principle)
@@ -208,7 +208,7 @@ namespace ariel{
         }
 
         bool isContainsCycle(Graph &g) {
-            size_t n = g.adj_matrix.size();
+            size_t n = g.getGraph().size();
             std::vector<Color> color(n, WHITE); // Initialize all vertices as not visited
             std::vector<int> parent(n, -1); // To store the parent of each vertex in the DFS tree (init with -1)
             std::vector<int> cycleVertices;  // to store the cycle if founded
@@ -259,7 +259,7 @@ namespace ariel{
 
         std::string isBipartite(Graph &g) {
 
-            size_t n = g.adj_matrix.size();
+            size_t n = g.getGraph().size();
             if( n == 0) return "0";
 
             std::vector<int> colors(n, 0); // 0: uncolored, 1: group 1, 2: group 2
@@ -277,7 +277,7 @@ namespace ariel{
                     q.pop();
 
                     for (size_t neighbor = 0; neighbor < n; ++neighbor) {
-                        if (g.adj_matrix[node][neighbor] != 0) {  // means there is an edge between them
+                        if (g.getGraph()[node][neighbor] != 0) {  // means there is an edge between them
                             if (colors[neighbor] == 0) {
                                 colors[neighbor] = (colors[node] == 1) ? 2 : 1;
                                 if(colors[neighbor] == 2) counter_2++;
@@ -337,8 +337,8 @@ namespace ariel{
                 bool relaxed  = false;
                 for (size_t u = 0; u < n; ++u) {
                     for (size_t v = 0; v < n; ++v) {
-                        if (g.adj_matrix[u][v] != 0 && dist[u] != INT_MAX && dist[u] + g.adj_matrix[u][v] < dist[v]) {
-                            dist[v] = dist[u] + g.adj_matrix[u][v];
+                        if (g.getGraph()[u][v] != 0 && dist[u] != INT_MAX && dist[u] + g.getGraph()[u][v] < dist[v]) {
+                            dist[v] = dist[u] + g.getGraph()[u][v];
                             parent[v] = u;
                             relaxed = true;
                             // std::cout << "u: " << u << " dist: " << dist[u] << ", v: " << v << " dist: " << dist[v] << std::endl;
@@ -351,7 +351,7 @@ namespace ariel{
             // Check for negative cycle
             for (size_t u = 0; u < n; ++u) {
                 for (size_t v = 0; v < n; ++v) {
-                    if (g.adj_matrix[u][v] != 0 && dist[u] != INT_MAX && dist[u] + g.adj_matrix[u][v] < dist[v]) {
+                    if (g.getGraph()[u][v] != 0 && dist[u] != INT_MAX && dist[u] + g.getGraph()[u][v] < dist[v]) {
                         // Negative cycle found
                         std::vector<int> cand_cycle;
                         int curr = u;

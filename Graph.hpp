@@ -11,9 +11,23 @@
 
 namespace ariel{
     class Graph{
-        public:
+        private:
             std::vector<std::vector<int>> adj_matrix;
+        public:
+            
             Graph(){}
+            /**
+             * @brief Retrieve a constant reference to the adjacency matrix of the graph.
+             *
+             * This function returns a constant reference to the adjacency matrix of the graph.
+             * It allows external access to the graph's internal adjacency matrix for reading purposes only.
+             * The returned reference is constant, meaning that it cannot be used to modify the internal state of the graph.
+             *
+             * @return A constant reference to the adjacency matrix of the graph.
+            */
+            const std::vector<std::vector<int>>& getGraph() const {
+                return adj_matrix;
+            }
             // methods:
             /**
              * this function gets a matrix represented in 2d vector and copy it into the instance graph.
@@ -59,7 +73,7 @@ namespace ariel{
             friend bool operator>=(const Graph& g1, const Graph& g2);
 
             /**
-             * incrementing ad decrement multiplication and division:
+             * incrementing and decrement multiplication and division:
             */
             Graph& operator++();  // incrementing every existing edge by one.
             Graph operator++(int);  // incrementing every existing edge by one
