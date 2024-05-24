@@ -59,9 +59,9 @@ namespace ariel{
             return os;
         }
 
-        Graph Graph::operator+(const Graph& g1) const{
+        Graph operator+(const Graph& g0, const Graph& g1){
 
-            size_t graph_size = this->adj_matrix.size();
+            size_t graph_size = g0.adj_matrix.size();
             if(graph_size != g1.adj_matrix.size()){  // sizes validation
                 throw std::invalid_argument("Cannot add graphs of different sizes.");
             }
@@ -72,7 +72,7 @@ namespace ariel{
             for(size_t i=0; i<graph_size; i++){
                 std::vector<int> row;
                 for(size_t j=0; j<graph_size; j++){
-                    row.push_back(this->adj_matrix[i][j] + g1.adj_matrix[i][j]);
+                    row.push_back(g0.adj_matrix[i][j] + g1.adj_matrix[i][j]);
                 }
                 matrix.push_back(row);
             }
@@ -100,9 +100,9 @@ namespace ariel{
             return *this; // returning a new copy of the graph.
         }
 
-        Graph Graph::operator-(const Graph& g1) const{
+        Graph operator-(const Graph& g0, const Graph& g1){
 
-            size_t graph_size = this->adj_matrix.size();
+            size_t graph_size = g0.adj_matrix.size();
             if(graph_size != g1.adj_matrix.size()){  // sizes validation
                 throw std::invalid_argument("Cannot substruct graphs of different sizes.");
             }
@@ -113,7 +113,7 @@ namespace ariel{
             for(size_t i=0; i<graph_size; i++){
                 std::vector<int> row;
                 for(size_t j=0; j<graph_size; j++){
-                    row.push_back(this->adj_matrix[i][j] - g1.adj_matrix[i][j]);
+                    row.push_back(g0.adj_matrix[i][j] - g1.adj_matrix[i][j]);
                 }
                 matrix.push_back(row);
             }
@@ -248,7 +248,7 @@ namespace ariel{
         }
 
         /**
-         * incrementing ad decrement multiplication and division:
+         * incrementing and decrement multiplication and division:
         */
        // Prefix increment
         Graph& Graph::operator++(){
@@ -307,25 +307,25 @@ namespace ariel{
         /**
          * multiplication of two graphs:
         */
-        Graph Graph::operator*(const Graph& g2) const {
+        Graph operator*(const Graph& g1, const Graph& g2){
 
             // Ensure the graphs are of the same size and are square matrices
-            size_t size_this = this->adj_matrix.size();
+            size_t size_g1 = g1.adj_matrix.size();
             size_t size_g2 = g2.adj_matrix.size();
             
-            if (size_this != size_g2) {
+            if (size_g1 != size_g2) {
                 throw std::invalid_argument("Cannot multiply graphs of different sizes.");
             }
             
             // create and initiate the result graph:
             Graph result;   
-            result.adj_matrix.resize(size_this, std::vector<int>(size_this, 0));
+            result.adj_matrix.resize(size_g1, std::vector<int>(size_g1, 0));
 
             // Matrix multiplication
-            for (size_t i = 0; i < size_this; ++i) {
-                for (size_t j = 0; j < size_this; ++j) {
-                        for (size_t k = 0; k < size_this; ++k) {
-                            result.adj_matrix[i][j] += this->adj_matrix[i][k] * g2.adj_matrix[k][j];
+            for (size_t i = 0; i < size_g1; ++i) {
+                for (size_t j = 0; j < size_g1; ++j) {
+                        for (size_t k = 0; k < size_g1; ++k) {
+                            result.adj_matrix[i][j] += g1.adj_matrix[i][k] * g2.adj_matrix[k][j];
                         }
                 }
             }

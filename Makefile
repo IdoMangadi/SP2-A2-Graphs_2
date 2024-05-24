@@ -38,7 +38,7 @@ valgrind: demo test
 clean:
 	rm -f *.o demo test
 
-cpt:
+cps:
 	git commit -a -m "$(m)"
 	git push
 	git status

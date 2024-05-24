@@ -34,7 +34,7 @@ namespace ariel{
             */
             void loadGraph(const std::vector<std::vector<int>> &input_matrix);
             /**
-             * this function print all the values of the graph.
+             * this function print a brief of the graph.
             */
             void printGraph();
             /**
@@ -48,13 +48,13 @@ namespace ariel{
             /**
              * Overloading the addition operators
             */
-            Graph operator+(const Graph& g1) const;
+            friend Graph operator+(const Graph& g0, const Graph& g1);
             Graph& operator+=(const Graph& g1);
             Graph operator+() const;
             /**
-             * Overloading the substruction operators
+             * Overloading the subtruction operators
             */
-            Graph operator-(const Graph& g1) const;
+            friend Graph operator-(const Graph& g0, const Graph& g1);
             Graph& operator-=(const Graph& g1);
             Graph operator-() const;
             /**
@@ -73,19 +73,37 @@ namespace ariel{
             friend bool operator>=(const Graph& g1, const Graph& g2);
 
             /**
-             * incrementing and decrement multiplication and division:
+             * incrementing and decrement multiplication and division by balue:
             */
-            Graph& operator++();  // incrementing every existing edge by one.
-            Graph operator++(int);  // incrementing every existing edge by one
-            Graph& operator--();  // decrementing every existing edge by one
-            Graph operator--(int);  // decrementing every existing edge by one
+            /**
+             * incrementing every existing edge by one (prefix).
+            */
+            Graph& operator++();
+            /**
+             * incrementing every existing edge by one (postfix).
+            */
+            Graph operator++(int);
+            /**
+             * decrementing every existing edge by one (prefix)..
+            */
+            Graph& operator--();
+            /**
+             * decrementing every existing edge by one (postfix).
+            */
+            Graph operator--(int);
+            /**
+             * multypling every value of the graph by given int.
+            */
             Graph& operator*=(int val);
+            /**
+             * dividing every value of the graph by given int.
+            */
             Graph& operator/=(int val);
 
             /**
-             * multiplication of two graphs:
+             * multiplication of two graphs.
             */
-            Graph operator*(const Graph& g2) const;
+            friend Graph operator*(const Graph& g0, const Graph& g1);
     };
 }
 
