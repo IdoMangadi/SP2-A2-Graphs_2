@@ -14,8 +14,11 @@ namespace ariel{
         private:
             std::vector<std::vector<int>> adj_matrix;
         public:
-            
-            Graph(){}
+            /**
+             * constructor of the graph:
+            */
+            Graph(){}  // regular constructor
+            Graph(const Graph& g);  // copy constructor (performing deep copy)
             /**
              * @brief Retrieve a constant reference to the adjacency matrix of the graph.
              *
@@ -42,7 +45,7 @@ namespace ariel{
             */
             size_t size();
             /**
-             * Overloading the output operator
+             * Overloading the output strem operator
             */
             friend std::ostream& operator<<(std::ostream& os, const Graph& g);
             /**
@@ -50,6 +53,15 @@ namespace ariel{
             */
             friend Graph operator+(const Graph& g0, const Graph& g1);
             Graph& operator+=(const Graph& g1);
+            /**
+             * @brief Unary plus operator overload.
+             * 
+             * This operator returns a new copy of the Graph object it's invoked on.
+             * It does this by invoking the copy constructor of the Graph class, 
+             * which creates a new Graph object that is a copy of the current object.
+             * 
+             * @return Graph - a new Graph object that is a copy of the current object.
+             */
             Graph operator+() const;
             /**
              * Overloading the subtruction operators

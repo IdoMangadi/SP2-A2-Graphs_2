@@ -27,6 +27,7 @@ The `Graph` class is responsible for representing a graph. It contains an adjace
 ### Methods:
 
 1. `Graph()`: Constructor to initialize an empty graph.
+   `Graph(Graph& g1)`: Constructor to perform a deep copy to the graph.
 
 2. `loadGraph(const std::vector<std::vector<int>> &input_matrix)`: Copies a given matrix into the graph's adjacency matrix.
    - **Parameters**: `input_matrix` - The matrix to be copied.

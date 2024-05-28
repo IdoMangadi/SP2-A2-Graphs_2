@@ -41,9 +41,8 @@ TEST_CASE("Test 2 graphs addition (g1+g2)")
     oss << g4;
     string g4_str = oss.str();
 
-    CHECK(g3_str == g4_str);
+    CHECK(g3_str == g4_str);  // g3 should be equal to g4
 
-    // Additional tests
     ariel::Graph g5;
     vector<vector<int>> graph5 = {
         {0, 2, 3},
@@ -72,7 +71,24 @@ TEST_CASE("Test 2 graphs addition (g1+g2)")
     oss << g7;
     string g7_str = oss.str();
 
-    CHECK(g6_str == g7_str);
+    CHECK(g6_str == g7_str);  // g6 should be equal to g7
+
+    // invalid operation: g1 and g2 have different dimensions
+    ariel::Graph g8;
+    vector<vector<int>> graph6 = {
+        {0, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0},
+        {0, 1, 0, 1, 0},
+        {0, 0, 1, 0, 1},
+        {1, 0, 0, 1, 0}};
+    g8.loadGraph(graph6);
+    CHECK_THROWS(g1 + g8);  // invalid operation
+
+    // adding 2 graphs of size 0:
+    ariel::Graph g9;
+    ariel::Graph g10;
+    ariel::Graph g11;
+    CHECK_THROWS(g11 = g9 + g10);  // invalid operation (both graphs are empty)
 }
 
 TEST_CASE("Test appending (g1+=g2)")
@@ -143,6 +159,18 @@ TEST_CASE("Test appending (g1+=g2)")
     string g5_str = oss.str();
 
     CHECK(g1_str2 == g5_str);
+
+    // invalid operation: g1 and g2 have different dimensions
+    ariel::Graph g6;
+    vector<vector<int>> graph3 = {
+        {0, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0},
+        {0, 1, 0, 1, 0},
+        {0, 0, 1, 0, 1},
+        {1, 0, 0, 1, 0}};
+    g6.loadGraph(graph3);
+    // g1 and g6 have different dimensions
+    CHECK_THROWS(g1 += g6);  // invalid operation
 }
 
 TEST_CASE("Test 1 graph unary addition (+g1)")
@@ -192,6 +220,7 @@ TEST_CASE("Test 1 graph unary addition (+g1)")
     string g4_str = oss.str();
 
     CHECK(g3_str == g4_str);
+    
 }
 
 TEST_CASE("Test 2 graph subtraction (g1-g2)")
@@ -262,6 +291,18 @@ TEST_CASE("Test 2 graph subtraction (g1-g2)")
     string g7_str = oss.str();
 
     CHECK(g6_str == g7_str);
+
+    // invalid operation: g1 and g2 have different dimensions
+    ariel::Graph g8;
+    vector<vector<int>> graph3 = {
+        {0, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0},
+        {0, 1, 0, 1, 0},
+        {0, 0, 1, 0, 1},
+        {1, 0, 0, 1, 0}};
+    g8.loadGraph(graph3);
+    // g1 and g8 have different dimensions
+    CHECK_THROWS(g1 - g8);  // invalid operation
 }
 
 TEST_CASE("Test subtraction (g1-=g2)")
@@ -332,6 +373,18 @@ TEST_CASE("Test subtraction (g1-=g2)")
     string g5_str = oss.str();
 
     CHECK(g1_str2 == g5_str);
+
+    // invalid operation: g1 and g2 have different dimensions
+    ariel::Graph g6;
+    vector<vector<int>> graph3 = {
+        {0, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0},
+        {0, 1, 0, 1, 0},
+        {0, 0, 1, 0, 1},
+        {1, 0, 0, 1, 0}};
+    g6.loadGraph(graph3);
+    // g1 and g6 have different dimensions
+    CHECK_THROWS(g1 -= g6);  // invalid operation
 }
 
 TEST_CASE("Test 1 graph unary subtraction (-g1)") {
@@ -747,6 +800,15 @@ TEST_CASE("Test multiplication by int (g1 *= value)") {
 
     g1 *= value;
     CHECK(g1.getGraph() == expectedGraph);
+
+    // test multiplication by 0
+    value = 0;
+    vector<vector<int>> expectedGraph2 = {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    g1 *= value;
+    CHECK(g1.getGraph() == expectedGraph2);
 }
 
 
@@ -827,6 +889,10 @@ TEST_CASE("Test 2 graph multiplication")
 
     ariel::Graph g30 = g10 * g20;
     CHECK(g30.getGraph() == expectedGraph2);
+
+    // invalid operation: g1 and g10 have different dimensions
+    CHECK_THROWS(g1 * g10);  // invalid operation
+
 
 }
 
