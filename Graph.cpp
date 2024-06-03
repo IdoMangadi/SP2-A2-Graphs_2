@@ -21,24 +21,28 @@ namespace ariel{
     }
     
     void Graph::loadGraph(const std::vector<std::vector<int>> &input_matrix){
-        // validation of the input matrix:
-        if(input_matrix.size() == 0) throw std::invalid_argument("Invalid graph: The graph is not a square matrix.");
-        if(input_matrix[0].size() == 0) throw std::invalid_argument("Invalid graph: The graph is not a square matrix.");
+            
+        // checking if the input matrix is a square matrix:
+        if(input_matrix.size() == 0) throw std::invalid_argument("Invalid graph: The graph is not a square matrix.");  // no rows in the matrix
         
         size_t rows_number = input_matrix.size();
-        for(const auto &col : input_matrix){ // going over all the rows
-            if(col.size() != rows_number){
+        for(const auto &row : input_matrix){ // going over all the rows and checking if the number of cols is equal to the number of rows
+            if(row.size() != rows_number){
                 throw std::invalid_argument("Invalid graph: The graph is not a square matrix.");
             }
         }
         
-        this->adj_matrix.clear();  // clearing the current adj matrix
-        // copying the input matrix into the adj matrix:
-        for(const auto &row : input_matrix){
+        this->adj_matrix.clear();  // clearing the adj matrix
+        // loop over the rows:
+        for(size_t i=0 ; i<rows_number ; i++){
             std::vector<int> new_row;  // creating a new row
             // loop over the cols:
-            for(int value : row){
-                new_row.push_back(value);  // pushing into the new row
+            for(size_t j=0 ; j<rows_number ; j++){
+                if(i==j && input_matrix[i][j] != 0){  // checking if the graph has a self loop
+                    this->adj_matrix.clear();  // clearing the adj matrix
+                    throw std::invalid_argument("Invalid graph: The graph has a self loop.");
+                }
+                new_row.push_back(input_matrix[i][j]); // pushing the value into the new row
             }
             this->adj_matrix.push_back(new_row);  // pushing the new row into the adj matrix
         }
@@ -341,11 +345,15 @@ namespace ariel{
         // Matrix multiplication
         for (size_t i = 0; i < size_g1; ++i) {
             for (size_t j = 0; j < size_g1; ++j) {
-                    for (size_t k = 0; k < size_g1; ++k) {
-                        result.adj_matrix[i][j] += g1.adj_matrix[i][k] * g2.adj_matrix[k][j];
-                    }
+                for (size_t k = 0; k < size_g1; ++k) {
+                    result.adj_matrix[i][j] += g1.adj_matrix[i][k] * g2.adj_matrix[k][j];
+                }
+                if(i==j && result.adj_matrix[i][j] != 0){
+                    throw std::invalid_argument("Invalid graph: The graph has a self loop.");
+                }
             }
         }
+        
         return result;
     }
 

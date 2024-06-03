@@ -29,19 +29,8 @@ TEST_CASE("Test 2 graphs addition (g1+g2)")
         {2, 0, 3},
         {1, 3, 0}};
     g4.loadGraph(expectedGraph);
-    
-    std::ostringstream oss;
-    oss << g3;
-    string g3_str = oss.str();
 
-    // Clear the ostringstream
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g4;
-    string g4_str = oss.str();
-
-    CHECK(g3_str == g4_str);  // g3 should be equal to g4
+    CHECK(g3.getGraph() == g4.getGraph());  // g3 should be equal to g4
 
     ariel::Graph g5;
     vector<vector<int>> graph5 = {
@@ -59,19 +48,7 @@ TEST_CASE("Test 2 graphs addition (g1+g2)")
         {3, 2, 0}};
     g7.loadGraph(expectedGraph2);
 
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g6;
-    string g6_str = oss.str();
-
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g7;
-    string g7_str = oss.str();
-
-    CHECK(g6_str == g7_str);  // g6 should be equal to g7
+    CHECK(g6.getGraph() == g7.getGraph());  // g6 should be equal to g7
 
     // invalid operation: g1 and g2 have different dimensions
     ariel::Graph g8;
@@ -116,18 +93,7 @@ TEST_CASE("Test appending (g1+=g2)")
         {1, 3, 0}};
     g3.loadGraph(expectedGraph);
 
-    std::ostringstream oss;
-    oss << g1;
-    string g1_str = oss.str();
-
-    // Clear the ostringstream
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g3;
-    string g3_str = oss.str();
-
-    CHECK(g1_str == g3_str);
+    CHECK(g1.getGraph() == g3.getGraph());  // g1 should be equal to g3
 
     // Additional tests
     ariel::Graph g4;
@@ -146,19 +112,7 @@ TEST_CASE("Test appending (g1+=g2)")
         {4, 4, 0}};
     g5.loadGraph(expectedGraph2);
 
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g1;
-    string g1_str2 = oss.str();
-
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g5;
-    string g5_str = oss.str();
-
-    CHECK(g1_str2 == g5_str);
+    CHECK(g1.getGraph() == g5.getGraph());
 
     // invalid operation: g1 and g2 have different dimensions
     ariel::Graph g6;
@@ -184,18 +138,7 @@ TEST_CASE("Test 1 graph unary addition (+g1)")
 
     ariel::Graph g2 = +g1;
 
-    std::ostringstream oss;
-    oss << g1;
-    string g1_str = oss.str();
-
-    // Clear the ostringstream
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g2;
-    string g2_str = oss.str();
-
-    CHECK(g1_str == g2_str);
+    CHECK(g1.getGraph() == g2.getGraph());
 
     // Additional tests
     ariel::Graph g3;
@@ -207,20 +150,7 @@ TEST_CASE("Test 1 graph unary addition (+g1)")
 
     ariel::Graph g4 = +g3;
 
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g3;
-    string g3_str = oss.str();
-
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g4;
-    string g4_str = oss.str();
-
-    CHECK(g3_str == g4_str);
-    
+    CHECK(g3.getGraph() == g4.getGraph());
 }
 
 TEST_CASE("Test 2 graph subtraction (g1-g2)")
@@ -248,18 +178,7 @@ TEST_CASE("Test 2 graph subtraction (g1-g2)")
         {-1, -1, 0}};
     g4.loadGraph(expectedGraph);
 
-    std::ostringstream oss;
-    oss << g3;
-    string g3_str = oss.str();
-
-    // Clear the ostringstream
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g4;
-    string g4_str = oss.str();
-
-    CHECK(g3_str == g4_str);
+    CHECK(g3.getGraph() == g4.getGraph());
 
     // Additional tests
     ariel::Graph g5;
@@ -278,19 +197,7 @@ TEST_CASE("Test 2 graph subtraction (g1-g2)")
         {-3, -1, 0}};
     g7.loadGraph(expectedGraph2);
 
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g6;
-    string g6_str = oss.str();
-
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g7;
-    string g7_str = oss.str();
-
-    CHECK(g6_str == g7_str);
+    CHECK(g6.getGraph() == g7.getGraph());
 
     // invalid operation: g1 and g2 have different dimensions
     ariel::Graph g8;
@@ -330,18 +237,7 @@ TEST_CASE("Test subtraction (g1-=g2)")
         {-1, -1, 0}};
     g3.loadGraph(expectedGraph);
 
-    std::ostringstream oss;
-    oss << g1;
-    string g1_str = oss.str();
-
-    // Clear the ostringstream
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g3;
-    string g3_str = oss.str();
-
-    CHECK(g1_str == g3_str);
+    CHECK(g1.getGraph() == g3.getGraph());
 
     // Additional tests
     ariel::Graph g4;
@@ -360,19 +256,7 @@ TEST_CASE("Test subtraction (g1-=g2)")
         {-4, -3, 0}};
     g5.loadGraph(expectedGraph2);
 
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g1;
-    string g1_str2 = oss.str();
-
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g5;
-    string g5_str = oss.str();
-
-    CHECK(g1_str2 == g5_str);
+    CHECK(g1.getGraph() == g5.getGraph());
 
     // invalid operation: g1 and g2 have different dimensions
     ariel::Graph g6;
@@ -404,18 +288,7 @@ TEST_CASE("Test 1 graph unary subtraction (-g1)") {
         {1, -3, 0}};
     g3.loadGraph(expectedGraph);
 
-    std::ostringstream oss;
-    oss << g2;
-    string g2_str = oss.str();
-
-    // Clear the ostringstream
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g3;
-    string g3_str = oss.str();
-
-    CHECK(g2_str == g3_str);
+    CHECK(g2.getGraph() == g3.getGraph());
 
     // Additional tests
     ariel::Graph g4;
@@ -433,20 +306,8 @@ TEST_CASE("Test 1 graph unary subtraction (-g1)") {
         {0, 0, 0},
         {0, 0, 0}};
     g6.loadGraph(expectedGraph2);
-
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g5;
-    string g5_str = oss.str();
-
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
-
-    oss << g6;
-    string g6_str = oss.str();
-
-    CHECK(g5_str == g6_str);
+    
+    CHECK(g5.getGraph() == g6.getGraph());
 }
 
 
@@ -837,40 +698,38 @@ TEST_CASE("Test division by int (g1 /= value)") {
 TEST_CASE("Test 2 graph multiplication")
 {
     ariel::Graph g1;
-    vector<vector<int>> graph = {
+    vector<vector<int>> graph1 = {
         {0, 1, 0},
-        {1, 0, 1},
+        {1, 0, 0},
         {0, 1, 0}};
-    g1.loadGraph(graph);
+    g1.loadGraph(graph1);
 
     ariel::Graph g2;
-    vector<vector<int>> weightedGraph = {
+    vector<vector<int>> graph2 = {
         {0, 1, 1},
         {1, 0, 2},
         {1, 2, 0}};
-    g2.loadGraph(weightedGraph);
+    g2.loadGraph(graph2);
 
-    ariel::Graph g3 = g1 * g2;
-    vector<vector<int>> expectedGraph = {
-        {1, 0, 2},
-        {1, 3, 1},
-        {1, 0, 2}};
-    
-    ariel::Graph g4;
-    g4.loadGraph(expectedGraph);
+    CHECK_THROWS(g1 * g2);  // invalid operation graph with self loop created
 
-    std::ostringstream oss;
-    oss<<g3;
-    string g3_str = oss.str();
-   
-    // Clear the ostringstream
-    oss.str("");  // Clear the contents
-    oss.clear();  // Clear the state flags
+    ariel::Graph g3;
+    vector<vector<int>> graph3 = {
+        {0, 0, 3},
+        {0, 0, 0},
+        {1, 1, 0}};
+    g3.loadGraph(graph3);
 
-    oss<<g4;
-    string g4_str = oss.str();
+    vector<vector<int>> graph_g1_g3 = {
+        {0, 0, 0},
+        {0, 0, 3},
+        {0, 0, 0}};
+    ariel::Graph res_g1_g3;
+    res_g1_g3.loadGraph(graph_g1_g3);
 
-    CHECK(g3_str == g4_str);
+    ariel::Graph g5 = g1*g3;
+
+    CHECK(g5.getGraph() == res_g1_g3.getGraph());
 
     ariel::Graph g10, g20;
     vector<vector<int>> graph10 = {
@@ -878,13 +737,13 @@ TEST_CASE("Test 2 graph multiplication")
         {3, 0}};
     vector<vector<int>> graph20 = {
         {0, 0},
-        {1, 0}};
+        {0, 0}};
     g10.loadGraph(graph10);
     g20.loadGraph(graph20);
 
     // Expected result of matrix multiplication of graph1 and graph2
     vector<vector<int>> expectedGraph2 = {
-        {2, 0},
+        {0, 0},
         {0, 0}};
 
     ariel::Graph g30 = g10 * g20;
