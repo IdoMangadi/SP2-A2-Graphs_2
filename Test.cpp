@@ -51,7 +51,7 @@ TEST_CASE("Test 2 graphs addition (g1+g2)")
 
     CHECK(g6.getGraph() == g7.getGraph());  // g6 should be equal to g7
 
-    // invalid operation: g1 and g2 have different dimensions
+    // EDGE CASE: invalid operation: g1 and g2 have different dimensions
     Graph g8;
     vector<vector<int>> graph6 = {
         {0, 1, 0, 0, 1},
@@ -62,7 +62,7 @@ TEST_CASE("Test 2 graphs addition (g1+g2)")
     g8.loadGraph(graph6);
     CHECK_THROWS(g1 + g8);  // invalid operation
 
-    // adding 2 graphs of size 0:
+    // EDGE CASE:adding 2 graphs of size 0:
     Graph g9;
     Graph g10;
     Graph g11;
@@ -115,7 +115,7 @@ TEST_CASE("Test appending (g1+=g2)")
 
     CHECK(g1.getGraph() == g5.getGraph());
 
-    // invalid operation: g1 and g2 have different dimensions
+    // EDGE CASE: invalid operation: g1 and g2 have different dimensions
     Graph g6;
     vector<vector<int>> graph3 = {
         {0, 1, 0, 0, 1},
@@ -200,7 +200,7 @@ TEST_CASE("Test 2 graph subtraction (g1-g2)")
 
     CHECK(g6.getGraph() == g7.getGraph());
 
-    // invalid operation: g1 and g2 have different dimensions
+    // EDGE CASE: invalid operation: g1 and g2 have different dimensions
     Graph g8;
     vector<vector<int>> graph3 = {
         {0, 1, 0, 0, 1},
@@ -259,7 +259,7 @@ TEST_CASE("Test subtraction (g1-=g2)")
 
     CHECK(g1.getGraph() == g5.getGraph());
 
-    // invalid operation: g1 and g2 have different dimensions
+    // EDGE CASE: invalid operation: g1 and g2 have different dimensions
     Graph g6;
     vector<vector<int>> graph3 = {
         {0, 1, 0, 0, 1},
@@ -691,6 +691,7 @@ TEST_CASE("Test division by int (g1 /= value)") {
     g1 /= value;
     CHECK(g1.getGraph() == expectedGraph);
 
+    // EDGE CASE: division by 0 
     value = 0;
     CHECK_THROWS(g1/=value);
 }
@@ -711,8 +712,8 @@ TEST_CASE("Test 2 graph multiplication")
         {1, 0, 2},
         {1, 2, 0}};
     g2.loadGraph(graph2);
-
-    CHECK_THROWS(g1 * g2);  // invalid operation graph with self loop created
+    // EDGE CASE: invalid operation graph with self loop created
+    CHECK_THROWS(g1 * g2);
 
     Graph g3;
     vector<vector<int>> graph3 = {
@@ -750,13 +751,13 @@ TEST_CASE("Test 2 graph multiplication")
     Graph g30 = g10 * g20;
     CHECK(g30.getGraph() == expectedGraph2);
 
-    // invalid operation: g1 and g10 have different dimensions
-    CHECK_THROWS(g1 * g10);  // invalid operation
+    // EDGE CASE: invalid operation: g1 and g10 have different dimensions
+    CHECK_THROWS(g1 * g10);
 
 
 }
 
-
+// EDGE CASES: Invalid operations
 TEST_CASE("Invalid operations")
 {
     Graph g1;
