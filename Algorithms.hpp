@@ -34,15 +34,15 @@ namespace ariel{
         */
         bool isContainsCycle(Graph &g); 
         /**
-         * Function to determine whethear a given graph is biapartite using the odd cycle theorem.
-         * (graph is bipartite if and only if it doesnt contain any odd cycles).
+         * Function to determine whethear a given graph is biapartite or not.
+         * (graph is bipartite if and only it can be colored with 2 colors).
          * retutn: the groups of vertices or "0" if it is not a biapartite graph.
         */
         std::string isBipartite(Graph &g);
         /**
          * Function to determine whethear there is a negative cycle in a given *directed* graph.
          * this function uses the Bellman-Ford algorithm.
-         * return: the negative cycle or "-1" if ther is no negative cycle in the graphor if its a undirected graph.
+         * return: the negative cycle or "-1" if there is no negative cycle in the graphor if its a undirected graph.
         */
         std::string negativeCycle(Graph &g);
     }

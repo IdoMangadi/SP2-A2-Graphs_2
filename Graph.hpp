@@ -51,8 +51,8 @@ namespace ariel{
             /**
              * Overloading the addition operators
             */
-            friend Graph operator+(const Graph& g0, const Graph& g1);
-            Graph& operator+=(const Graph& g1);
+            Graph operator+(const Graph& g) const;
+            Graph& operator+=(const Graph& g);
             /**
              * @brief Unary plus operator overload.
              * 
@@ -66,8 +66,8 @@ namespace ariel{
             /**
              * Overloading the subtruction operators
             */
-            friend Graph operator-(const Graph& g0, const Graph& g1);
-            Graph& operator-=(const Graph& g1);
+            Graph operator-(const Graph& g) const;
+            Graph& operator-=(const Graph& g);
             Graph operator-() const;
             /**
              * comparison operators:
@@ -77,12 +77,12 @@ namespace ariel{
              *  If, nevertheless, the number of edges is the same,
              *  then graph G2 is larger than graph G1 if the representing matrix of G2 has a higher order than that of G1.
             */
-            friend bool operator<(const Graph& g1, const Graph& g2);
-            friend bool operator>(const Graph& g1, const Graph& g2);
-            friend bool operator==(const Graph& g1, const Graph& g2);
-            friend bool operator!=(const Graph& g1, const Graph& g2);
-            friend bool operator<=(const Graph& g1, const Graph& g2);
-            friend bool operator>=(const Graph& g1, const Graph& g2);
+            bool operator<(const Graph& g) const;
+            bool operator>(const Graph& g) const;
+            bool operator==(const Graph& g) const;
+            bool operator!=(const Graph& g) const;
+            bool operator<=(const Graph& g) const;
+            bool operator>=(const Graph& g) const;
 
             /**
              * incrementing and decrement multiplication and division by balue:
@@ -115,7 +115,7 @@ namespace ariel{
             /**
              * multiplication of two graphs.
             */
-            friend Graph operator*(const Graph& g0, const Graph& g1);
+            Graph operator*(const Graph& g) const;
     };
 }
 

@@ -13,19 +13,20 @@
 #include <queue>
 #include "Algorithms.hpp"
 
-#define INT_MAX std::numeric_limits<int>::max()
+#define INT_MAX numeric_limits<int>::max()
+
+using namespace std;
 
 namespace ariel{
     
     namespace Algorithms{
 
-        // ------------------------------------------------ //
-        // ------------------IS CONNECTED------------------ //
-        // ------------------------------------------------ //
+        // ------------------------------------------------------------------------------------------------------------------UTILITIES--------------------
+        enum Color { WHITE, GREY, BLACK };
         /**
          * A simple implementation of DFS:
         */ 
-        void dfs(Graph &g, size_t v, std::vector<int> &visited){
+        void dfs(Graph &g, size_t v, vector<int> &visited){
 
             visited[v] = 1;  // marking the vertix as visited
             for(size_t i=0; i<g.size(); i++){ // going over the neighbours and if not visited, operating dfs on them
@@ -34,7 +35,6 @@ namespace ariel{
                 }
             }
         }
-
         /**
          * A simple util function to check whethear a graph is directed or not
         */
@@ -48,6 +48,28 @@ namespace ariel{
             }
             return false;
         }
+        /**
+         * A simple util function to make relaxation |V|-1 times
+         * params: dist - the distances vector, parent - the parent vector, g - the graph
+         */
+        void relaxNminus1(Graph &g, vector<int> &dist, vector<int> &parent){
+            size_t n = g.size();
+            for (size_t i = 0; i < n - 1; ++i) {
+                bool relaxed  = false;
+                for (size_t u = 0; u < n; ++u) {
+                    for (size_t v = 0; v < n; ++v) {
+                        if (g.getGraph()[u][v] != 0 && dist[u] != INT_MAX && dist[u] + g.getGraph()[u][v] < dist[v]) {
+                            dist[v] = dist[u] + g.getGraph()[u][v];
+                            parent[v] = u;
+                            relaxed = true;
+                        }
+                    }
+                }
+                if(!relaxed) { break; }
+            }
+        }
+
+        // ------------------------------------------------------------------------------------------------------------------IS CONNECTED------------------
 
         int isConnected(Graph &g){
             size_t n = g.size();
@@ -57,65 +79,47 @@ namespace ariel{
             bool directed = isDirected(g);
             
 
-            std::vector<int> visited(g.size(), 0); // craeting a visited vector with 0's
+            vector<int> visited(g.size(), 0); // craeting a visited vector with 0's
             if(directed){
                 // in this case we do n dfs's:
                 for(size_t i=0; i<n; i++){
-                    std::fill(visited.begin(), visited.end(), 0); // filling "visited" with 0's.
+                    fill(visited.begin(), visited.end(), 0); // filling "visited" with 0's.
                     dfs(g, i, visited);
                     for(int v : visited){  // going all over the vertices
-                        if( v == 0){  // means we didnt reach to one of the vertices
-                            return 0;
-                        }
+                        if( v == 0) return 0;  // means we didnt reach to one of the vertices
                     }
                 }
-
             }
             else{  // the graph is undirected:
                 dfs(g, 0, visited);  // operating dfs one time on the graph
                 for(int v : visited){  // going all over the vertices
-                    if( v == 0){  // means we didnt reach to one of the vertices
-                        return 0;
-                    }
+                    if( v == 0) return 0; // means we didnt reach to one of the vertices
                 }
             }
 
             return 1;  // means all validations went ok, the graph is strong connected. 
         }
 
+        // -----------------------------------------------------------------------------------------------------------------SHORTEST PATH-----------------
 
-        // ------------------------------------------------ //
-        // ------------------SHORTEST PATH----------------- //
-        // ------------------------------------------------ //
-
-        std::string shortestPath(Graph &g, size_t src, size_t dst){
+        string shortestPath(Graph &g, size_t src, size_t dst){
             size_t n = g.getGraph().size();
             if( n == 0 || src > n-1 || dst > n-1) return "-1";  // validation check
 
-            std::vector<int> dist(n, std::numeric_limits<int>::max()); // Initialize distances to infinity
-            std::vector<int> parent(n, -1); // To store the parent of each vertex in the shortest path (init with -1)
-            std::vector<int> path; // to store the shortest path from src to dst
+            vector<int> dist(n, numeric_limits<int>::max()); // Initialize distances to infinity
+            vector<int> parent(n, -1); // To store the parent of each vertex in the shortest path (init with -1)
+            vector<int> path; // to store the shortest path from src to dst
 
             dist[src] = 0; // init the distance from src to itself to 0
 
-            // Relax edges |V|-1 times:
-            for (size_t i = 0; i < n-1; i++) { // notice (n-1)
-                for (size_t j = 0; j < n; j++) {  // going over the edges:
-                    for (size_t v = 0; v < n; v++) {
-                        if (g.getGraph()[j][v] != 0 && dist[j] != std::numeric_limits<int>::max() && dist[j] + g.getGraph()[j][v] < dist[v]) {
-                            dist[v] = dist[j] + g.getGraph()[j][v];
-                            parent[v] = j;
-                        }
-                    }
-                }
-            }
+            relaxNminus1(g, dist, parent);  // Relax edges |V|-1 times
 
             // Check for negative cycles (one last relaxing)
             for (size_t u = 0; u < n; ++u) {
                 for (size_t v = 0; v < n; ++v) {
-                    if (g.getGraph()[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + g.getGraph()[u][v] < dist[v]) {
+                    if (g.getGraph()[u][v] != 0 && dist[u] != numeric_limits<int>::max() && dist[u] + g.getGraph()[u][v] < dist[v]) {
                         // Negative cycle found
-                        // std::cout << "Graph contains negative cycle" << std::endl;
+                        // cout << "Graph contains negative cycle" << endl;
                         return "-1";
                     }
                 }
@@ -126,15 +130,15 @@ namespace ariel{
                 return "-1";
             }
 
-            // Reconstruct the shortest path
+            // Reconstruct the shortest path:
             for (int v = dst; v != -1; v = parent[(unsigned int)v]) {
                 path.push_back(v);
             }
-            std::reverse(path.begin(), path.end());  // reversing the path
+            reverse(path.begin(), path.end());  // reversing the path
             // converting to string:
-            std::string result = "";
+            string result = "";
             for(size_t i=0; i<path.size(); i++){
-                result += std::to_string(path[i]);
+                result += to_string(path[i]);
                 if(i != path.size()-1){
                     result += "->";
                 }
@@ -143,18 +147,14 @@ namespace ariel{
             return result;
         }
         
-
-        // ------------------------------------------------ //
-        // ---------------------CYCLES--------------------- //
-        // ------------------------------------------------ //
+        // ---------------------------------------------------------------------------------------------------------------------CYCLES-------------------
 
         // Simple implementation of dfs regarding cycles finding using the DAG theorem.
-        enum Color { WHITE, GREY, BLACK };
         // directed graphs version:
-        bool hasCycleUtil_directed(Graph &g, size_t u, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &cycleVertices) {
+        bool hasCycleUtil_directed(Graph &g, size_t u, vector<Color> &color, vector<int> &parent, vector<int> &cycleVertices) {
             color[u] = GREY; // Mark the current vertex as visited but not finished
 
-            for (size_t v = 0; v < g.getGraph()[u].size(); ++v) {  // going over the neighbours:
+            for (size_t v = 0; v < g.getGraph()[u].size(); ++v) {  // going over the neighbours of u:
                 if (g.getGraph()[u][v] != 0) {
                     if (color[v] == WHITE) {  // means neighbour hasnt visited yet
                         parent[v] = u;
@@ -169,7 +169,7 @@ namespace ariel{
                             current = parent[static_cast<size_t>(current)];
                         }
                         cycleVertices.push_back(v);  // Adding the starting vertex to complete the cycle
-                        std::reverse(cycleVertices.begin(), cycleVertices.end());
+                        reverse(cycleVertices.begin(), cycleVertices.end());
                         return true;
                     }
                 }
@@ -179,7 +179,7 @@ namespace ariel{
             return false;
         }
         // undirected graphs version:
-        bool hasCycleUtil_undirected(Graph &g, size_t u, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &cycleVertices) {
+        bool hasCycleUtil_undirected(Graph &g, size_t u, vector<Color> &color, vector<int> &parent, vector<int> &cycleVertices) {
             color[u] = GREY; // Mark the current vertex as visited but not finished
 
             for (size_t v = 0; v < g.getGraph()[u].size(); ++v) {  // going over the neighbours:
@@ -197,7 +197,7 @@ namespace ariel{
                             current = parent[static_cast<size_t>(current)];
                         }
                         cycleVertices.push_back(v);  // Adding the starting vertex to complete the cycle
-                        std::reverse(cycleVertices.begin(), cycleVertices.end());
+                        reverse(cycleVertices.begin(), cycleVertices.end());
                         return true;
                     }
                 }
@@ -209,23 +209,23 @@ namespace ariel{
 
         bool isContainsCycle(Graph &g) {
             size_t n = g.getGraph().size();
-            std::vector<Color> color(n, WHITE); // Initialize all vertices as not visited
-            std::vector<int> parent(n, -1); // To store the parent of each vertex in the DFS tree (init with -1)
-            std::vector<int> cycleVertices;  // to store the cycle if founded
+            vector<Color> color(n, WHITE); // Initialize all vertices as not visited
+            vector<int> parent(n, -1); // To store the parent of each vertex in the DFS tree (init with -1)
+            vector<int> cycleVertices;  // to store the cycle if founded
 
             if(isDirected(g)){
                 // Perform DFS from each vertex
                 for (size_t i = 0; i < n; ++i) {
                     if (color[i] == WHITE && hasCycleUtil_directed(g, i, color, parent, cycleVertices)) {
                         // Construct the cycle string
-                        std::string cycle = "The cycle is: ";
+                        string cycle = "The cycle is: ";
                         for (size_t ver = 0; ver < cycleVertices.size(); ver++) {
-                            cycle += std::to_string(cycleVertices[ver]);
+                            cycle += to_string(cycleVertices[ver]);
                             if(ver < cycleVertices.size()-1){
                                 cycle += "->";
                             }
                         }
-                        std::cout << cycle << std::endl;
+                        cout << cycle << endl;
                         return true;
                     }
                 }
@@ -236,14 +236,14 @@ namespace ariel{
                 for (size_t i = 0; i < n; ++i) {
                     if (color[i] == WHITE && hasCycleUtil_undirected(g, i, color, parent, cycleVertices)) {
                         // Construct the cycle string
-                        std::string cycle = "The cycle is: ";
+                        string cycle = "The cycle is: ";
                         for (size_t ver = 0; ver < cycleVertices.size(); ver++) {
-                            cycle += std::to_string(cycleVertices[ver]);
+                            cycle += to_string(cycleVertices[ver]);
                             if(ver < cycleVertices.size()-1){
                                 cycle += "->";
                             }
                         }
-                        std::cout << cycle << std::endl;
+                        cout << cycle << endl;
                         return true;
                     }
                 }
@@ -251,24 +251,20 @@ namespace ariel{
             }
         }
 
-
-
-        // ------------------------------------------------ //
-        // -------------------BIAPARTIT-------------------- //
-        // ------------------------------------------------ //
-
-        std::string isBipartite(Graph &g) {
+        // ---------------------------------------------------------------------------------------------------------------------BIAPARTIT----------------
+        
+        string isBipartite(Graph &g) {
 
             size_t n = g.getGraph().size();
-            if( n == 0) return "0";
+            if(n == 0) return "0";
 
-            std::vector<int> colors(n, 0); // 0: uncolored, 1: group 1, 2: group 2
+            vector<int> colors(n, 0); // 0: uncolored, 1: group 1, 2: group 2
             size_t counter_2 = 0;  // to count how many vertices are colored in 2
 
-            for (size_t i = 0; i < n; ++i) {
-                if (colors[i] != 0) continue;
+            for (size_t i = 0; i < n; ++i) {  // going over all the vertices
+                if (colors[i] != 0) continue;  // if the vertex is already colored, continue
 
-                std::queue<size_t> q;
+                queue<size_t> q;  // creating a queue to operate bfs
                 q.push(i);
                 colors[i] = 1;
 
@@ -279,7 +275,7 @@ namespace ariel{
                     for (size_t neighbor = 0; neighbor < n; ++neighbor) {
                         if (g.getGraph()[node][neighbor] != 0) {  // means there is an edge between them
                             if (colors[neighbor] == 0) {
-                                colors[neighbor] = (colors[node] == 1) ? 2 : 1;
+                                colors[neighbor] = (colors[node] == 1) ? 2 : 1;  // coloring the neighbor with the opposite color of the node
                                 if(colors[neighbor] == 2) counter_2++;
                                 q.push(neighbor);
                             } else if (colors[neighbor] == colors[node]) {
@@ -290,18 +286,18 @@ namespace ariel{
                 }
             }
 
-            std::string group1 = "";
-            std::string group2 = "";
+            string group1 = "";
+            string group2 = "";
             size_t counter_1 = n - counter_2;  // counter_1/2 represents how many 1 colored verteces there are left to add.
 
             for (size_t i = 0; i < n; ++i) {
                 if (colors[i] == 1){
-                    group1 += std::to_string(i);
+                    group1 += to_string(i);
                     if(counter_1 != 1) group1 += ", ";
                     counter_1--;  
                 }
                 else {
-                    group2 += std::to_string(i);
+                    group2 += to_string(i);
                     if(counter_2 != 1) group2 += ", ";
                     counter_2--;
                 }
@@ -311,12 +307,9 @@ namespace ariel{
         }
 
 
-        
-        // ------------------------------------------------ //
-        // ----------------NEGATIVE CYCLES----------------- //
-        // ------------------------------------------------ //
+        // ------------------------------------------------------------------------------------------------------------------NEGATIVE CYCLES-------------
 
-        std::string negativeCycle(Graph& g) {
+        string negativeCycle(Graph& g) {
 
             if(isDirected(g) == false){
                 return "-1";
@@ -325,43 +318,31 @@ namespace ariel{
             size_t n = g.size();
             if( n == 0) return "Empty graph";
 
-            std::vector<int> dist(n, INT_MAX);
-            std::vector<int> parent(n, -1); // To track the path
-            std::vector<bool> visited(n, false);
+            vector<int> dist(n, INT_MAX);
+            vector<int> parent(n, -1); // To track the path
+            vector<bool> visited(n, false);
 
             // Assume vertex 0 as the source
             dist[0] = 0;
 
-            // Relax edges |V|-1 times
-            for (size_t i = 0; i < n - 1; ++i) {
-                bool relaxed  = false;
-                for (size_t u = 0; u < n; ++u) {
-                    for (size_t v = 0; v < n; ++v) {
-                        if (g.getGraph()[u][v] != 0 && dist[u] != INT_MAX && dist[u] + g.getGraph()[u][v] < dist[v]) {
-                            dist[v] = dist[u] + g.getGraph()[u][v];
-                            parent[v] = u;
-                            relaxed = true;
-                            // std::cout << "u: " << u << " dist: " << dist[u] << ", v: " << v << " dist: " << dist[v] << std::endl;
-                        }
-                    }
-                }
-                if(!relaxed) { break; }
-            }
+            relaxNminus1(g, dist, parent);  // Relax edges |V|-1 times
             
             // Check for negative cycle
             for (size_t u = 0; u < n; ++u) {
                 for (size_t v = 0; v < n; ++v) {
-                    if (g.getGraph()[u][v] != 0 && dist[u] != INT_MAX && dist[u] + g.getGraph()[u][v] < dist[v]) {
+                    if (g.getGraph()[u][v] != 0 && dist[u] != INT_MAX && dist[u] + g.getGraph()[u][v] < dist[v]) {  // Relaxation happened
                         // Negative cycle found
-                        std::vector<int> cand_cycle;
+                        vector<int> cand_cycle;
                         int curr = u;
-                        while (!visited[(size_t)curr]) {
-                            cand_cycle.push_back(curr);
-                            visited[(size_t)curr] = true;
-                            curr = parent[(size_t)curr];
+                        while (!visited[(size_t)curr]) {  // If we reach a visited vertex, we have found the cycle
+                            cand_cycle.push_back(curr);  // Add the vertex to the cycle
+                            visited[(size_t)curr] = true;  // Mark the vertex as visited
+                            curr = parent[(size_t)curr];  // Move to the parent
                         }
                         cand_cycle.push_back(curr);
-                        std::vector<int> cycle;
+                        // NOTE: it is possible that the cand_cycle contains another negative cycle.
+                        //       so that the parent of the first vertex in the cycle is not the last vertex in the inner cycle.
+                        vector<int> cycle;
                         if(v != (size_t)curr){  // means we got into a different negative cycle
                             cycle.push_back(curr);
                             int curr_2 = parent[(size_t)curr];
@@ -374,10 +355,10 @@ namespace ariel{
                         else{
                             cycle = cand_cycle;
                         }
-                        std::reverse(cycle.begin(), cycle.end());
-                        std::string cyclePath = std::to_string(cycle[0]);
+                        reverse(cycle.begin(), cycle.end());
+                        string cyclePath = to_string(cycle[0]);
                         for (size_t i = 1; i < cycle.size(); ++i) {
-                            cyclePath += "->" + std::to_string(cycle[i]);
+                            cyclePath += "->" + to_string(cycle[i]);
                         }
                         return cyclePath;
                     }
