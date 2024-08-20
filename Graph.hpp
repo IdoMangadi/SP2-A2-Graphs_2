@@ -43,7 +43,7 @@ namespace ariel{
             /**
              * this function returns the size of the square graph.
             */
-            size_t size();
+            size_t size() const;
             /**
              * Overloading the output strem operator
             */

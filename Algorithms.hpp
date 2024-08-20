@@ -18,7 +18,8 @@ namespace ariel{
     namespace Algorithms{
         /**
          * Function to determine if a given Graph is strong connected for directed or undirected graph.
-         * In case of directed graph, this function implements a brute-approach using dfs from all vertices.
+         * In case of directed graph, this function uses the kosaraju algorithm.
+         * In case of undirected graph, this function uses the DFS algorithm.
          * returns: 1 for strong connected and 0 for not strong connected.
         */
         int isConnected(Graph &g);

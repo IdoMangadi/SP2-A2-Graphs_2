@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <queue>
+#include <stack>
 #include "Algorithms.hpp"
 
 #define INT_MAX numeric_limits<int>::max()
@@ -49,6 +50,69 @@ namespace ariel{
             return false;
         }
         /**
+         * utility function to fill the stack with the vertices in order of their finish time
+         */
+        void fillOrder(const Graph &g, size_t v, vector<int> &visited, stack<size_t> &Stack) {
+            visited[v] = 1;
+            for(size_t i = 0; i < g.size(); i++) {
+                if(g.getGraph()[v][i] != 0 && !visited[i]) {
+                    fillOrder(g, i, visited, Stack);
+                }
+            }
+            Stack.push(v);
+        }
+        /**
+         * utility function to create a transposed graph and return it
+         */
+        Graph getTranspose(const Graph &g) {
+            size_t n = g.size();
+            Graph gT;
+            vector <vector<int>> transposeMatrix(g.size(), vector<int>(g.size(), 0));  // creating a matrix with the same size as the original matrix
+            for(size_t i = 0; i < n; i++) {
+                for(size_t j = 0; j < n; j++) {
+                    transposeMatrix[j][i] = g.getGraph()[i][j];  // transposing the matrix
+                }
+            }
+            gT.loadGraph(transposeMatrix);  // loading the transposed matrix into the graph
+            return gT;
+        }
+        /**
+        * @brief Checks if a directed graph is strongly connected.
+        * 
+        * This function uses Kosaraju's algorithm to check if the graph is strongly connected.
+        * It performs a DFS to fill a stack with vertices in the order of their finish time.
+        * Then, it transposes the graph and performs another DFS starting from the vertex
+        * at the top of the stack. If all vertices are visited in this second DFS, the graph
+        * is strongly connected.
+         */
+        int isStronglyConnected(Graph &g) {
+            size_t n = g.size();
+            vector<int> visited(n, 0);
+            stack<size_t> Stack;  // creating a stack to store the vertices in order of their finish time
+
+            for(size_t i = 0; i < n; i++) {
+                if(!visited[i]) {
+                    fillOrder(g, i, visited, Stack);
+                }
+            }
+
+            Graph gT = getTranspose(g);
+            fill(visited.begin(), visited.end(), 0);
+
+            size_t v = Stack.top();
+            Stack.pop();
+            dfs(gT, v, visited);
+
+            for(int i : visited) {
+                if(i == 0) {
+                    return 0;
+                }
+            }
+
+            return 1;
+        }
+
+        /**
          * A simple util function to make relaxation |V|-1 times
          * params: dist - the distances vector, parent - the parent vector, g - the graph
          */
@@ -73,27 +137,19 @@ namespace ariel{
 
         int isConnected(Graph &g){
             size_t n = g.size();
-            if( n == 0) return 1;
+            if(n == 0) return 1;  // an empty graph is considered as strong connected
 
             // checking if it is a directed or undirected graph:
             bool directed = isDirected(g);
             
-
-            vector<int> visited(g.size(), 0); // craeting a visited vector with 0's
             if(directed){
-                // in this case we do n dfs's:
-                for(size_t i=0; i<n; i++){
-                    fill(visited.begin(), visited.end(), 0); // filling "visited" with 0's.
-                    dfs(g, i, visited);
-                    for(int v : visited){  // going all over the vertices
-                        if( v == 0) return 0;  // means we didnt reach to one of the vertices
-                    }
-                }
+                return isStronglyConnected(g);
             }
             else{  // the graph is undirected:
+                vector<int> visited(n, 0);  // creating a vector to mark the visited vertices
                 dfs(g, 0, visited);  // operating dfs one time on the graph
                 for(int v : visited){  // going all over the vertices
-                    if( v == 0) return 0; // means we didnt reach to one of the vertices
+                    if(v == 0) return 0; // means we didnt reach to one of the vertices
                 }
             }
 
